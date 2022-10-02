@@ -1,0 +1,9 @@
+version: '3.4'
+services:
+    web:
+        build: ../
+        environment:
+            FLAG="JMT{eazy-flask-rce}"
+        port:
+            - "5000:5000"
+        restart: unless-stopped
