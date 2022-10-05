@@ -10,9 +10,10 @@ def hello_world():
 
 
 @app.route("/www.zip")
-def return_sourcecode():
+def return_SourceCode():
     with open("./app.py", "r") as f:
         return f.read()
+
 
 @app.route("/rce", methods=['GET', 'POST'])
 def action_rce():
@@ -20,18 +21,12 @@ def action_rce():
         return "Why not try to search the backup"
     elif flask.request.method == "POST":
         action = flask.request.form["act"]
-        action = action.split(" ")
-        if action[0] not in ["ls", "cat", "env"]:
-            return "What are you doing!"
-        for i in range(len(action)):
-            if action[i]==" " or action[i]=="":
-                action.pop(i)
-        if len(action)>1 and "/" in action[1]:
-            return "nonono"
-        else:
-            res = subprocess.run(action, stdout=subprocess.PIPE)
-            print(res)
-            return res.stdout
+        with open("/app/temp.sh", "w") as f:
+            f.write(action[1:-1])
+        res = subprocess.run(["/bin/bash", "/app/temp.sh"], stdout=subprocess.PIPE)
+        # print(res)
+        return "success"
+
 
 if __name__ == '__main__':
     app.run(debug=True)
